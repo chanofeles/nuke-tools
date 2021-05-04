@@ -1,0 +1,56 @@
+set cut_paste_input [stack 0]
+version 11.3 v4
+push 0
+push $cut_paste_input
+Group {
+inputs 2
+name difference_op
+selected true
+xpos 301
+ypos 1550
+addUserKnob {20 CommonKey}
+addUserKnob {41 tolerance T MergeExpression1.tolerance}
+}
+Input {
+inputs 0
+name Input2
+xpos -189
+ypos -333
+number 1
+}
+Input {
+inputs 0
+name Input1
+xpos 9
+ypos -333
+}
+MergeExpression {
+inputs 2
+expr3 "abs(Br-Ar) > tolerance || abs(Bg-Ag) > tolerance || abs(Bb-Ab)\n > tolerance?1:0"
+name MergeExpression1
+selected true
+xpos -98
+ypos -276
+addUserKnob {20 User}
+addUserKnob {7 tolerance R 0 0.1}
+tolerance 0.001
+}
+Shuffle {
+red alpha
+green alpha
+blue alpha
+name Shuffle1
+xpos -98
+ypos -242
+}
+Clamp {
+name Clamp1
+xpos -98
+ypos -210
+}
+Output {
+name Output1
+xpos -98
+ypos -99
+}
+end_group
