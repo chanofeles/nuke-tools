@@ -1,0 +1,38 @@
+set cut_paste_input [stack 0]
+version 11.3 v4
+push $cut_paste_input
+Group {
+name Pin_Time
+tile_color 0xe5c155ff
+selected true
+xpos 142
+ypos 2273
+addUserKnob {20 User l Pin}
+addUserKnob {3 source l "source input"}
+source 1006
+addUserKnob {3 target l "target input"}
+target 1042
+addUserKnob {3 speed}
+speed 1
+addUserKnob {41 filter T TimeWarp1.filter}
+addUserKnob {26 Fernando l "" +STARTLINE T "\n\n\n\nFA"}
+}
+Input {
+inputs 0
+name Input1
+xpos -589
+ypos 350
+}
+TimeWarp {
+lookup {{parent.source+(frame-parent.target)*parent.speed C x1017 1017 x1420 1420}}
+time ""
+name TimeWarp1
+xpos -589
+ypos 390
+}
+Output {
+name Output1
+xpos -589
+ypos 490
+}
+end_group
