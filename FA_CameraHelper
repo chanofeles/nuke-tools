@@ -1,0 +1,23 @@
+set cut_paste_input [stack 0]
+version 11.3 v4
+push $cut_paste_input
+NoOp {
+name FA_CameraHelper
+tile_color 0xff8200ff
+gl_color 0xff
+label NoCamera
+note_font Regular
+note_font_size 24
+selected true
+xpos 1108
+ypos 6
+addUserKnob {20 User}
+addUserKnob {22 grab_cameras l Cameras T "n=nuke.thisNode()\ncameras=\[]\nknobs=n.knobs()\nknob_list=\['focal_point', 'fstop', 'haperture','vaperture']\nknob_link=\['focal_point', 'fstop']\nif 'scriptCams' in n.knobs():\n    n.removeKnob(knobs\['scriptCams'])\n    \nfor node in nuke.allNodes():\n    if node.Class()=='Camera2':\n        node_name=node.knob('name').getValue()\n        cameras.append(node_name)\n    \n        \nprint (cameras)\n\ncam_choice=nuke.nuke.Enumeration_Knob('scriptCams', 'Cameras', cameras)\n\n\nn.addKnob(cam_choice)\n\nprint (type(nuke.thisNode().knob('scriptCams').values()))\n\n\n" +STARTLINE}
+addUserKnob {22 link_cam l Link -STARTLINE T "#Select camera from list\nfor i in nuke.selectedNodes():\n    i\['selected'].setValue(False)\nn=nuke.thisNode().knob('scriptCams').value()\nparent_node=nuke.thisNode()\ntarget_node = nuke.toNode(n)\ntarget_node\['selected'].setValue(True)\n\n#Grab, populate values from selected camera\ncam_target=nuke.selectedNode()\nnuke.thisNode().knob('focal_point').setValue(cam_target\['focal_point'].getValue())\nnuke.thisNode().knob('haperture').setValue(cam_target\['haperture'].getValue())\nnuke.thisNode().knob('vaperture').setValue(cam_target\['vaperture'].getValue())\nnuke.thisNode().knob('fstop').setValue(cam_target\['fstop'].getValue())\n\n##ExpressionLinks\n#target_node = nuke.selectedNode()\nfor knob in target_node.allKnobs():\n    if knob.name() in knob_link:\n       knob.setExpression('parent.\{0\}.\{1\}'.format(parent_node.name(), knob.name()))\n    \nparent_node\['label'].setValue(target_node.name())\nparent_node\['note_font_size'].setValue(24)\nparent_node\['note_font'].setValue(\"Regular\")  \n        \n\n\n#focal=cam_target\['focal']\n\n#print (n)\n#nuke.message(n)"}
+addUserKnob {22 init T "#Breaking link with child Camera node\nif 'target_node' not in globals():\n    nuke.message('Data is already clean')\n    \nelse:\n    for knob in target_node.allKnobs():\n        if knob.name() in knob_link:\n            knob.clearAnimated()\n        #knob.setValue(False)\n    \n    #Reset Values on knobs\n    n=nuke.thisNode()\n    cameras=\[]\n    knobs=n.knobs()\n    for knob in n.allKnobs():\n        if knob.name() in knob_list:\n            knob.setValue(0)\n            \n    #Deleting the camera list\n    if 'scriptCams' in n.knobs():\n        n.removeKnob(knobs\['scriptCams'])\n     \n    #Node Labeling    \n    parent_node\['label'].setValue('NoCamera')\n    parent_node\['note_font_size'].setValue(24)\n    parent_node\['note_font'].setValue(\"Regular\")  \n        " +STARTLINE}
+addUserKnob {22 zoom l Zoom2Cam -STARTLINE T "if not cameras:\n    nuke.message('Please Select a camera from the menu first')\n    \nelse:\n    xZ=target_node.xpos() + target_node.screenWidth()/2\n    yZ=target_node.ypos() + target_node.screenHeight()/2\n    nuke.zoom(2,\[xZ, yZ])\n    \n    \n    \n    \n    \n"}
+addUserKnob {7 focal_point R 0 50}
+addUserKnob {7 fstop R 0 32}
+addUserKnob {7 haperture R 0 50}
+addUserKnob {7 vaperture R 0 50}
+}
