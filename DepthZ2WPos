@@ -1,0 +1,132 @@
+set cut_paste_input [stack 0]
+version 11.3 v4
+push $cut_paste_input
+Group {
+name DepthZ2WPos
+tile_color 0x5b0000ff
+selected true
+xpos 176
+ypos 2273
+addUserKnob {20 User}
+addUserKnob {22 GetCam T "\nthisnode=nuke.thisNode()\ntargetnode=nuke.toNode('CamValues')\nnode=nuke.Root().selectedNode()\nif not node:\n    nuke.message('Please select a Camera')\nelif node.Class()==\"Camera2\":\n    thisnode\['vaperture'].setValue (node\['vaperture'].getValue())\n    thisnode\['haperture'].setValue (node\['haperture'].getValue())\n    thisnode\['focal'].setValue (node\['focal'].getValue())\n    thisnode\['label'].setValue (node\['name'].getValue())\nelse:\n    nuke.message ('Please select a Camera')" +STARTLINE}
+addUserKnob {7 focal l Focal}
+addUserKnob {7 vaperture}
+addUserKnob {7 haperture}
+addUserKnob {26 ""}
+addUserKnob {26 author l "" +STARTLINE T "Fer 2013"}
+}
+Input {
+inputs 0
+name Cam
+xpos 98
+ypos -86
+number 1
+}
+Dot {
+name Dot4
+xpos 132
+ypos 6
+}
+Input {
+inputs 0
+name Input
+xpos 468
+ypos -842
+}
+Dot {
+name Dot8
+xpos 502
+ypos -741
+}
+set Ne0ebae80 [stack 0]
+Dot {
+name Dot6
+xpos 228
+ypos -737
+}
+Dot {
+name Dot7
+xpos 228
+ypos -483
+}
+set N80675130 [stack 0]
+push $Ne0ebae80
+Shuffle {
+in depth
+name Shuffle66
+xpos 468
+ypos -651
+}
+Copy {
+inputs 2
+from0 rgba.alpha
+to0 rgba.alpha
+name Copy1
+xpos 468
+ypos -495
+}
+Unpremult {
+name Unpremult1
+xpos 468
+ypos -256
+}
+Expression {
+expr0 (x/width-.5)*blue*(haperture/focal)
+expr1 (y/height-.5)*blue*(vaperture/focal)
+name Expression1
+xpos 468
+ypos -222
+addUserKnob {20 User}
+addUserKnob {7 focal}
+focal {{parent.CamValues.focal}}
+addUserKnob {7 vaperture}
+vaperture {{parent.CamValues.vaperture}}
+addUserKnob {7 haperture}
+haperture {{parent.CamValues.haperture}}
+}
+Invert {
+channels {-rgba.red -rgba.green rgba.blue none}
+name Invert1
+xpos 468
+ypos -194
+}
+push $N80675130
+Dot {
+name Dot9
+xpos 228
+ypos -142
+}
+PositionToPoints2 {
+inputs 2
+display textured
+render_mode textured
+name PositionToPoints1
+selected true
+xpos 468
+ypos -147
+}
+TransformGeo {
+inputs 2
+name TransformGeo1
+xpos 468
+ypos 1
+}
+Output {
+name Output1
+xpos 468
+ypos 120
+}
+NoOp {
+inputs 0
+name CamValues
+xpos 763
+ypos -235
+addUserKnob {20 User}
+addUserKnob {7 focal}
+focal {{parent.focal}}
+addUserKnob {7 vaperture}
+vaperture {{parent.vaperture}}
+addUserKnob {7 haperture}
+haperture {{parent.haperture}}
+}
+end_group
