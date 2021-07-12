@@ -1,5 +1,5 @@
 ##Nuke settings
-###Last updated May 3rd 2021
+###Last updated v2 Jun 22 2021
 
 ##NukeSurvivalToolkit
 nuke.pluginAddPath("./NukeSurvivalToolkit")
@@ -7,7 +7,12 @@ nuke.pluginAddPath("./NukeSurvivalToolkit")
 ##W_hotbox
 nuke.pluginAddPath("./W_hotbox")
 
+##W_scaleTree
+nuke.pluginAddPath("./W_scaleTree")
 
 
-##KnobScripter
-#from KnobScripter import *
+##Stamps
+nuke.pluginAddPath("./stamps")
+
+##Misc_Tools
+nuke.pluginAddPath("./python")
