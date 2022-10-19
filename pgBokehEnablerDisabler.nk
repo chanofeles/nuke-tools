@@ -1,0 +1,23 @@
+set cut_paste_input [stack 0]
+version 11.3 v5
+Group {
+ inputs 0
+ name pgBokehGui
+ tile_color 0xff0000
+ label "GuiExpression ON"
+ note_font "Bold Bold"
+ note_font_size 24
+ selected true
+ xpos 16515
+ ypos 8068
+ addUserKnob {20 User}
+ addUserKnob {22 gui T "groupNode = nuke.toNode('pgBokehGui')\nwith groupNode:\n    nuke.thisGroup().knob('tile_color').setValue(0xff0000)\n    nuke.thisGroup().knob('label').setValue(\"GuiExpression ON\")\n    nuke.thisGroup().knob('note_font_size').setValue(24)\n    nuke.thisGroup().knob('note_font').setValue(\"Bold\")  \nfor node in nuke.allNodes():\n    if node.Class()== 'pgBokeh':\n        node.knob('disable').setExpression('\$gui')\n            \n\n\n\n" +STARTLINE}
+ addUserKnob {22 noGui T "groupNode = nuke.toNode('pgBokehGui')\nwith groupNode:\n    nuke.thisGroup().knob('tile_color').setValue(0xff0000ff)\n    nuke.thisGroup().knob('label').setValue(\"GuiExpression OFF\")\n    nuke.thisGroup().knob('note_font_size').setValue(24)\n    nuke.thisGroup().knob('note_font').setValue(\"Bold\")    \n      \n    \nfor node in nuke.allNodes():\n    if node.Class()== 'pgBokeh':\n        node.knob('disable').clearAnimated()\n        node.knob('disable').setValue(False)" +STARTLINE}
+}
+ Output {
+  inputs 0
+  name Output1
+  xpos 0
+  ypos 300
+ }
+end_group
