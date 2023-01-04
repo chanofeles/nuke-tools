@@ -16,3 +16,9 @@ nuke.pluginAddPath("./stamps")
 
 ##Misc_Tools
 nuke.pluginAddPath("./python")
+
+##NukeSurvivalToolkit
+nuke.pluginAddPath("./nuke-vector-matrix")
+
+
+##Leo mejor hincha de millonarios.

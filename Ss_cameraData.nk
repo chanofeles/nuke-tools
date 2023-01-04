@@ -1,0 +1,27 @@
+set cut_paste_input [stack 0]
+version 13.2 v4
+push $cut_paste_input
+NoOp {
+ name CameraData
+ selected true
+ xpos -1573
+ ypos 117
+ addUserKnob {20 cameradata l CameraData}
+ addUserKnob {7 cameraFocusDistance l "Focus distance (cm)" R 0 1000}
+ cameraFocusDistance {{"\[metadata exr/focus]"}}
+ addUserKnob {7 FocusDM l "Focus distance (dm)" R 0 1000}
+ FocusDM {{"cameraFocusDistance * 0.254"}}
+ addUserKnob {26 ""}
+ addUserKnob {7 fStop l f/stop R 2 16}
+ fStop {{"\[metadata exr/aperture]"}}
+ addUserKnob {26 ""}
+ addUserKnob {7 focal l "Focal length" R 0 200}
+ focal {{"\[metadata exr/focalLength]"}}
+ addUserKnob {26 ""}
+ addUserKnob {7 ISO R 400 1200}
+ ISO {{"\[metadata exr/isoSpeed]"}}
+ addUserKnob {26 ""}
+ addUserKnob {26 space_newLine l "" +STARTLINE T "Create Camera or Link Camera : "}
+ addUserKnob {22 lecamera l "Link to selected camera" -STARTLINE T "# Link selected Camera.\nsl = nuke.selectedNode()\nif sl.Class() =='Camera2' or sl.Class() == 'HubCamera2':    \n    sl = nuke.selectedNode() # nuke.selectedNode()\n    sl\['focal_point'].setExpression('CameraData.FocusDM+ExpressionWaveGen_deep_live.expResult') #focal_point\n    sl\['fstop'].setExpression('CameraData.iris') #Fstop\n    sl\['focal'].setExpression('CameraData.focal') #Focal\n    nuke.thisNode()\['selCamera'].setValue(nuke.selectedNode().name())\nif sl.Class() =='NoOp':\n    nuke.message(\"<font color='red'><strong>ERROR</strong></font><br>Please select <font color='red'>Camera</font> node.\")"}
+ addUserKnob {26 selCamera l "linked camera name :" T ""}
+}

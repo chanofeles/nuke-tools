@@ -1,0 +1,2437 @@
+set cut_paste_input [stack 0]
+version 13.2 v4
+StickyNote {
+ inputs 0
+ name StickyNote54
+ tile_color 0xff0000ff
+ label "Subtle edge breakup\nUse for full CG or ENVs"
+ note_font_size 20
+ selected true
+ xpos -251
+ ypos 666
+}
+StickyNote {
+ inputs 0
+ name StickyNote55
+ tile_color 0xff0000ff
+ label "Light Blur / Glow\nUsed to add glow to ENV lights"
+ note_font_size 20
+ selected true
+ xpos -252
+ ypos 855
+}
+StickyNote {
+ inputs 0
+ name StickyNote56
+ label "Spherical Edge lens soften"
+ note_font_size 20
+ selected true
+ xpos -252
+ ypos 1126
+}
+StickyNote {
+ inputs 0
+ name StickyNote58
+ tile_color 0xff00ff
+ label "Chromatic abberation\nTweak based on plate"
+ note_font_size 20
+ selected true
+ xpos -253
+ ypos 1311
+}
+StickyNote {
+ inputs 0
+ name StickyNote59
+ tile_color 0xff00ff
+ label "Vignette\nTweak based on plate"
+ note_font_size 20
+ selected true
+ xpos -257
+ ypos 1438
+}
+push $cut_paste_input
+Group {
+ name Group10
+ label "chroma ab"
+ selected true
+ xpos -265
+ ypos 1255
+ addUserKnob {20 User}
+ addUserKnob {14 rchan l "red scale" R 0 100}
+ rchan 1.00075
+ addUserKnob {14 gchan l "green scale" R 0 100}
+ gchan 1.0005
+ addUserKnob {14 bchan l "blue scale" R 0 100}
+ bchan 1
+ addUserKnob {20 pan_group l "center / pan" n 1}
+ pan_group 0
+ addUserKnob {12 center}
+ center {{input0.width/2} {input0.height/2}}
+ addUserKnob {6 pad_black l "black outside" -STARTLINE}
+ pad_black true
+ addUserKnob {12 rchan_pan l "red pan"}
+ addUserKnob {12 gchan_pan l "green pan"}
+ addUserKnob {12 bchan_pan l "blue pan"}
+ addUserKnob {26 ""}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {4 outputAlpha l output M {"fake alpha over bg" "fake alpha only" white ""}}
+ addUserKnob {26 ""}
+ addUserKnob {7 mix}
+ mix 1
+ addUserKnob {20 version l Version}
+ addUserKnob {26 Help l Help: T "This 'chromaAb' gizmo is supposed to be similar to the chormaAb that is in Shake,\nand applies the effect on whatever is connected to the FG input.\n\nIt is meant to be used as a merge operation, but if you choose to only plug in the \nFG you can. This, however, can cause unwanted edges. Because this is ment to\nbe used as a merge, if you disable this node, it will return whatever is inputed in the BG.\nIf nothing is put into the BG and it is disabled, this will return nothing.\n\n\n"}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start http://lois4.lucasfilm.com/document/chromaab_v01gizmo-nuke/" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 VersionRelease l "Version Release" T 3.0}
+ addUserKnob {26 ReleaseNotes l "Release Notes" T "fixes proxy bugs"}
+ addUserKnob {26 Author l Author: T "Can Chang (cchang)"}
+ addUserKnob {26 LastEditBy l "Last Edit By:" T "Mark Nettleton (mnettleton)"}
+ addUserKnob {26 ReleaseDate l "Release Date:" T 11/18/11}
+}
+ Input {
+  inputs 0
+  name bg
+  xpos 523
+  ypos -735
+  number 1
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.Reformat2.box_width i}}
+  box_height {{parent.Reformat2.box_height i}}
+  box_fixed true
+  box_pixel_aspect {{parent.Reformat2.box_pixel_aspect i}}
+  pbb true
+  name Reformat3
+  xpos 523
+  ypos -664
+ }
+ Dot {
+  name Dot3
+  xpos 557
+  ypos -468
+ }
+set Nf9866c00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 557
+  ypos -180
+ }
+set Nf9867000 [stack 0]
+ Dot {
+  name Dot1
+  xpos 557
+  ypos 204
+ }
+ Input {
+  inputs 0
+  name fg
+  xpos 641
+  ypos -733
+ }
+ Reformat {
+  type "to box"
+  box_width {{"\[value \[input this 0].format.r] - \[value \[input this 0].format.x]" i}}
+  box_height {{"\[value \[input this 0].format.t]  - \[value \[input this 0].format.y] " i}}
+  box_fixed true
+  box_pixel_aspect {{"\[value \[input this 0].pixel_aspect]" i}}
+  pbb true
+  name Reformat2
+  xpos 641
+  ypos -661
+ }
+ Dot {
+  name Dot7
+  xpos 675
+  ypos -588
+ }
+set Nf987a400 [stack 0]
+ Transform {
+  translate {{parent.bchan_pan} {parent.bchan_pan}}
+  scale {{parent.bchan} {parent.bchan}}
+  center {{parent.center.x} {parent.center.y}}
+  black_outside {{parent.pad_black}}
+  name blue_repo
+  xpos 909
+  ypos -490
+ }
+set Nf987a800 [stack 0]
+push $Nf987a400
+ Transform {
+  translate {{parent.gchan_pan} {parent.gchan_pan}}
+  scale {{parent.gchan} {parent.gchan}}
+  center {{parent.center.x} {parent.center.y}}
+  black_outside {{parent.pad_black}}
+  name green_repo
+  xpos 787
+  ypos -492
+ }
+set Nf987ac00 [stack 0]
+push $Nf987a400
+ Transform {
+  translate {{parent.rchan_pan} {parent.rchan_pan}}
+  scale {{parent.rchan} {parent.rchan}}
+  center {{parent.center.x} {parent.center.y}}
+  black_outside {{parent.pad_black}}
+  name red_repo
+  xpos 641
+  ypos -491
+ }
+set Nf987b000 [stack 0]
+ Merge {
+  inputs 2
+  operation plus
+  name Merge1
+  xpos 1060
+  ypos -323
+ }
+ Merge {
+  inputs 2
+  operation plus
+  name Merge2
+  xpos 1170
+  ypos -323
+ }
+ Grade {
+  channels alpha
+  multiply 0.3333333333
+  name Grade1
+  label "one third A"
+  xpos 1170
+  ypos -264
+ }
+set Nf987bc00 [stack 0]
+push $Nf9867000
+push $Nf987bc00
+ Merge2 {
+  inputs 2
+  operation under
+  name Merge5
+  label "fake A over bg"
+  xpos 1170
+  ypos -190
+ }
+push $Nf9866c00
+push $Nf987a800
+ Merge {
+  inputs 2
+  swap true
+  name blueOver
+  xpos 909
+  ypos -323
+ }
+push $Nf9866c00
+push $Nf987ac00
+ Merge {
+  inputs 2
+  swap true
+  name greenOver
+  xpos 787
+  ypos -323
+ }
+push $Nf9866c00
+push $Nf987b000
+ Merge {
+  inputs 2
+  swap true
+  name redOver
+  xpos 641
+  ypos -324
+ }
+ Copy {
+  inputs 2
+  from0 rgba.green
+  to0 rgba.green
+  name Copy2
+  xpos 787
+  ypos -258
+  disable {{"!\[exists parent.input0]&&!\[exists parent.input1]" i x2116 0}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.blue
+  to0 rgba.blue
+  name Copy3
+  xpos 909
+  ypos -258
+  disable {{"!\[exists parent.input0]&&!\[exists parent.input1]" i x2116 0}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy4
+  xpos 1170
+  ypos -113
+ }
+ CCrosstalk {
+  name CCrosstalk1
+  xpos 1170
+  ypos -10
+ }
+ Clamp {
+  channels alpha
+  name Clamp1
+  xpos 1170
+  ypos 55
+ }
+set Nf98f0000 [stack 0]
+ Switch {
+  inputs 2
+  which {{outputAlpha i}}
+  name Switch1
+  xpos 1396
+  ypos 61
+ }
+push $Nf98f0000
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 1396
+  ypos 102
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos 1396
+  ypos 144
+  disable {{(outputAlpha==2)*-1+1 i}}
+ }
+ Dissolve {
+  inputs 2
+  which {{1-parent.mix}}
+  name Dissolve1
+  label mix
+  xpos 1396
+  ypos 188
+ }
+ Output {
+  name Output1
+  xpos 1396
+  ypos 277
+ }
+end_group
+Roto {
+ inputs 0
+ output alpha
+ cliptype bbox
+ curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 2097664}
+    {t x44838000 x440c8000}
+    {a pt1x 0 pt1y 0 pt2x 0 pt2y 0 pt3x 0 pt3y 0 pt4x 0 pt4y 0 ptex00 0 ptex01 0 ptex02 0 ptex03 0 ptex10 0 ptex11 0 ptex12 0 ptex13 0 ptex20 0 ptex21 0 ptex22 0 ptex23 0 ptex30 0 ptex31 0 ptex32 0 ptex33 0 ptof1x 0 ptof1y 0 ptof2x 0 ptof2y 0 ptof3x 0 ptof3y 0 ptof4x 0 ptof4y 0 pterr 0 ptrefset 0 ptmot x40800000 ptref 0}
+    {curvegroup Bezier1 512 bezier
+     {{cc
+       {f 8192}
+       {px x44eea000
+        {xc3b845a0 xc0c90600}
+        {x44846234 x44a48309}
+        {x43b845a0 x40c90600}
+        {xc2ff77d0 x4301d3f0}
+        {x44f2d795 x446ce342}
+        {x42ff77d0 xc301d3f0}
+        {x40060800 x42a78518}
+        {x4503c299 x43f5878c}
+        {xc0060000 xc2a78520}
+        {x4301d3f0 x4296c49a}
+        {x44f1888c x41b00634}
+        {xc301d3f8 xc296c49b}
+        {x43c7fa1c x40060400}
+        {x44820725 xc3a5f104}
+        {xc3c7fa1c xc0060440}
+        {x42d16668 xc2c4d602}
+        {x42e559a6 x41f3084c}
+        {xc2d16665 x42c4d604}
+        {xc0c90624 xc33e8dd2}
+        {xc2297fce x43e3bb00}
+        {x40c90624 x433e8dd4}
+        {xc3299d2e xc31f24d8}
+        {x42f61a2a x446bd73a}
+        {x43299d2e x431f24d8}}}     idem}
+     {t x44813000 x440ff000}
+     {a osw x41200000 osf 0 str 1 spx x44838000 spy x440c8000 sb 1 ltn x44840000 ltm x44840000 tt x40800000}}}}}}
+ toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 tt 4 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+ toolbar_brush_hardness 0.200000003
+ toolbar_source_transform_scale {1 1}
+ toolbar_source_transform_center {1052 562}
+ colorOverlay {0 0 0 0}
+ lifetime_type "all frames"
+ lifetime_start 1056
+ lifetime_end 1056
+ motionblur_shutter_offset_type centred
+ source_black_outside true
+ name Roto31
+ selected true
+ xpos -616
+ ypos 1004
+}
+Invert {
+ name Invert6
+ selected true
+ xpos -616
+ ypos 1069
+}
+Blur {
+ size 600
+ name Blur27
+ selected true
+ xpos -616
+ ypos 1125
+}
+push $cut_paste_input
+Group {
+ name Group5
+ help "This tool eliminates all nan and inf value pixels and replaces them with averaged values from surrounding pixels."
+ label "nan inf kill"
+ selected true
+ xpos -396
+ ypos -20
+ addUserKnob {20 NAN_FIX}
+ addUserKnob {41 size T Blur1.size}
+ addUserKnob {20 Version}
+ addUserKnob {26 Help l Help: T "Eliminates NAN pixels and fills them out with neighboring pixels."}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start http://lois4/document/nuke-NAN_FIX-help/" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 VersionRelease l "Version Release" T 1.0}
+ addUserKnob {26 ReleaseNotes l "Release Notes:" T "Initial gizmo release"}
+ addUserKnob {26 Authors l Authors: T "Ivan Busquets"}
+ addUserKnob {26 LastEditBy l "Last Edit By:" T "Jose Fernandez de Castro"}
+ addUserKnob {26 Release l "Release Date:" T 07/29/14}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 213
+  ypos -455
+ }
+ Dot {
+  name Dot5
+  xpos 247
+  ypos -343
+ }
+set N8a7f1c00 [stack 0]
+ Expression {
+  expr0 "isinf(r) || isnan(r) ?0:r"
+  expr1 "isinf(g) || isnan(g) ?0:g"
+  expr2 "isinf(b) || isnan(b) ?0:b"
+  expr3 a==inf||a==-inf?0:a
+  name Expression2
+  xpos 213
+  ypos -266
+ }
+set Nd79cc000 [stack 0]
+ Dot {
+  name Dot4
+  xpos 522
+  ypos -262
+ }
+ Dot {
+  name Dot6
+  xpos 522
+  ypos 61
+ }
+push $N8a7f1c00
+ Expression {
+  expr3 "isinf(r) || isnan(r) || isinf(g) || isnan(g) || isinf(b) || isnan(b)"
+  name Expression3
+  xpos -67
+  ypos -347
+ }
+set Nd79ccc00 [stack 0]
+ Dot {
+  name Dot1
+  xpos -33
+  ypos -10
+ }
+push $Nd79ccc00
+ Invert {
+  channels alpha
+  name Invert1
+  xpos 55
+  ypos -266
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle2
+  xpos 55
+  ypos -207
+ }
+set Nd79cd800 [stack 0]
+push $Nd79cc000
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge1
+  xpos 213
+  ypos -207
+ }
+ Blur {
+  size {{parent.Blur1.size}}
+  name Blur2
+  xpos 213
+  ypos -160
+ }
+push $Nd79cd800
+ Blur {
+  size 3
+  name Blur1
+  xpos 55
+  ypos -151
+ }
+ Merge2 {
+  inputs 2
+  operation divide
+  name Merge2
+  xpos 213
+  ypos -84
+ }
+push $N8a7f1c00
+ Dot {
+  name Dot3
+  xpos 327
+  ypos -273
+ }
+ Dot {
+  name Dot2
+  xpos 327
+  ypos -39
+ }
+ Keymix {
+  inputs 3
+  name Keymix1
+  xpos 213
+  ypos -20
+ }
+ Switch {
+  inputs 2
+  name Switch1
+  xpos 213
+  ypos 57
+ }
+ Output {
+  name Output1
+  xpos 213
+  ypos 130
+ }
+end_group
+Group {
+ name Group6
+ label "neg kil"
+ selected true
+ xpos -396
+ ypos 56
+ addUserKnob {20 Negkill}
+ addUserKnob {26 Clamp l "Clamp (below 0)"}
+ addUserKnob {41 channels T Clamp9.channels}
+ addUserKnob {26 Clamp1 l "Clamp (between 0-1)"}
+ addUserKnob {41 channels_1 l channels T Clamp10.channels}
+ addUserKnob {20 Version}
+ addUserKnob {26 "" l Help: T "Negkill clips the black levels to a value of zero in the color channels\nwhile clamping your alpha between zero and one"}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start https://confluence.lucasfilm.com/x/-suh" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 VersionRelease l "Version Release:" T 2.0}
+ addUserKnob {26 ReleaseNotes l "Release Notes:" T "Will not error when missing alpha channel."}
+ addUserKnob {26 Authors l Author(s): T "Matt Brumit (mbrumit)"}
+ addUserKnob {26 "" l "Last Edit By:" T "Matt Brumit (mbrumit)"}
+ addUserKnob {26 ReleaseDate l ReleaseDate: T 12/7/11}
+}
+ Input {
+  inputs 0
+  name In
+  xpos -446
+  ypos 424
+ }
+ Clamp {
+  maximum_enable false
+  name Clamp9
+  xpos -446
+  ypos 535
+ }
+ Clamp {
+  channels alpha
+  name Clamp10
+  xpos -446
+  ypos 618
+ }
+ Output {
+  name Output1
+  xpos -446
+  ypos 773
+ }
+end_group
+set N8a7f9080 [stack 0]
+Dot {
+ name Dot74
+ selected true
+ xpos -550
+ ypos 72
+}
+Dot {
+ name Dot75
+ selected true
+ xpos -550
+ ypos 228
+}
+set Nd7a31400 [stack 0]
+Dot {
+ name Dot76
+ selected true
+ xpos -550
+ ypos 365
+}
+push $Nd7a31400
+Keyer {
+ invert true
+ operation "luminance key"
+ name Keyer1
+ selected true
+ xpos -493
+ ypos 218
+}
+push $N8a7f9080
+Log2Lin {
+ operation lin2log
+ name Log2Lin1
+ selected true
+ xpos -396
+ ypos 167
+}
+Blur {
+ inputs 1+1
+ channels rgba
+ size 100
+ mix 0.05
+ name Blur28
+ label "size: \[value size]"
+ selected true
+ xpos -396
+ ypos 218
+}
+Log2Lin {
+ name Log2Lin2
+ selected true
+ xpos -396
+ ypos 279
+}
+Unpremult {
+ name Unpremult10
+ selected true
+ xpos -396
+ ypos 318
+}
+ShuffleCopy {
+ inputs 2
+ name ShuffleCopy1
+ selected true
+ xpos -396
+ ypos 361
+}
+Premult {
+ name Premult34
+ selected true
+ xpos -396
+ ypos 402
+}
+Dot {
+ name Dot77
+ selected true
+ xpos -362
+ ypos 601
+}
+set Nf993e400 [stack 0]
+Group {
+ name Group7
+ help "randomizes the position of each pixel within a certain distance\nUse for adding noise. Works like Randomise in shake or Dither in CompTime.\nUse filter type presets for different types of noise. You will get large noise or finer noise.\nSet amplitude above 0 for this to work"
+ knobChanged "\nn = nuke.thisNode()\nk = nuke.thisKnob()\nif k.name() in \[\"showPanel\", \"JitterPattern\"]:\n    n\['size'].setVisible(n.knob(\"JitterPattern\").value() == \"Custom\")\n    n\['irregularity'].setVisible(n.knob(\"JitterPattern\").value() == \"Custom\")\n    n\['intensity'].setVisible(n.knob(\"JitterPattern\").value() == \"Custom\")\n    n\['endl'].setVisible(n.knob(\"JitterPattern\").value() == \"Custom\")\n"
+ label "\[value JitterPattern]"
+ selected true
+ xpos -514
+ ypos 588
+ mapsize {0.15 0.15}
+ addUserKnob {20 jittermizer}
+ addUserKnob {41 channels T IDistort.channels}
+ addUserKnob {4 JitterPattern l "Jitter Pattern" M {"Kodak 5248" "Kodak 5279" "Kodak FX214" "Kodak GTS274" "Kodak 5217" "Kodak 5218" Custom "" ""}}
+ JitterPattern "Kodak 5217"
+ addUserKnob {6 BBOX l "use BBox" -STARTLINE}
+ BBOX true
+ addUserKnob {26 ""}
+ addUserKnob {14 size +HIDDEN R 0 100}
+ size 0.5
+ addUserKnob {14 irregularity +HIDDEN R 0 100}
+ irregularity 0.6
+ addUserKnob {14 intensity +HIDDEN R 0 100}
+ intensity 0.38
+ addUserKnob {26 endl l "" +STARTLINE +HIDDEN}
+ addUserKnob {7 seed t "use the expression \"frame\" to put some running noise through the jittermizer. Otherwise it will be static." R 1 100}
+ seed 1
+ addUserKnob {41 uv_scale l amplitude T IDistort.uv_scale}
+ addUserKnob {7 offset}
+ offset 0.5
+ addUserKnob {7 dilate R -100 100}
+ addUserKnob {26 ""}
+ addUserKnob {6 Crop l "Crop to Format" t "Crops the output to the project settings width & height" +STARTLINE}
+ Crop true
+ addUserKnob {20 Transform}
+ addUserKnob {12 translate}
+ addUserKnob {7 rotate}
+ addUserKnob {14 scale R 0 100}
+ scale 1
+ addUserKnob {7 skew}
+ addUserKnob {12 center}
+ addUserKnob {20 Version}
+ addUserKnob {26 Help l Help: T "Jittermizer can be used to add a bit of noise to an edge by \nrandomly breaking up the matte. For example, a roto-ed hair\nmatte that looks too straight can be made to look more ragged\nand natural with Jittermizer."}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start http://lois4/document/nuke-jittermizer-help/" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 VRelease l "Version Release:" T 6.1}
+ addUserKnob {26 RNotes l ReleaseNotes: T "Added Transform controls to move noise pattern\nAdded a \"Custom\" option to Jitter Patern options\nFixed error with link sequences pointing to missing frames"}
+ addUserKnob {26 "" l Authors: T "Jason Billington (jbillington)"}
+ addUserKnob {26 last l "Last Edit By:" T "Ivan Busquets (ibusquets)"}
+ addUserKnob {26 Date l "Release Date:" T 11/11/11}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 63
+  ypos -988
+ }
+ Dilate {
+  size {{parent.dilate i}}
+  name Dilate
+  xpos 63
+  ypos -406
+ }
+set Nf993ec00 [stack 0]
+ AdjBBox {
+  numpixels {{(parent.IDistort.uv_scale/5)+35 i}}
+  name AdjBBox1
+  xpos 208
+  ypos -399
+ }
+ Constant {
+  inputs 0
+  color 0.5
+  format {{{parent.input.format}}}
+  name Constant1
+  xpos 366
+  ypos -1059
+ }
+ Dot {
+  name Dot2
+  xpos 400
+  ypos -953
+ }
+set Nf993f800 [stack 0]
+push $Nf993f800
+ Dot {
+  name Dot3
+  xpos 626
+  ypos -953
+ }
+ NoOp {
+  name Noise_Parameters
+  xpos 592
+  ypos -886
+  addUserKnob {20 User}
+  addUserKnob {3 seed}
+  seed 134
+  addUserKnob {26 ""}
+  addUserKnob {7 w_size}
+  w_size {{"\[switch \[numvalue parent.JitterPattern] \{0 \{format 3.3\} 1 \{format 2.7\} 2 \{format 1.87\} 3 \{format 0.04\} 4 \{format 0.23\} 5 \{format 0.1\} default \{value parent.size.w\}\}]"}}
+  addUserKnob {7 h_size}
+  h_size {{"\[switch \[numvalue parent.JitterPattern] \{0 \{format 2.9\} 1 \{format 2.6\} 2 \{format 2.6\} 3 \{format 0.1\} 4 \{format 1.2\} 5 \{format 1.6\} default \{value parent.size.h\}\}]"}}
+  addUserKnob {26 ""}
+  addUserKnob {7 w_irr}
+  w_irr {{"\[switch \[numvalue parent.JitterPattern] \{0 \{format 0.6\} 1 \{format 1\} 2 \{format 1\} 3 \{format 0.9\} 4 \{format 0.6\} 5 \{format 0.6\} default \{value parent.irregularity.w\}\}]"}}
+  addUserKnob {7 h_irr}
+  h_irr {{"\[switch \[numvalue parent.JitterPattern] \{0 \{format 0.6\} 1 \{format 0.76\} 2 \{format 0.76\} 3 \{format 0.76\} 4 \{format 0.86\} 5 \{format 0.86\} default \{value parent.irregularity.h\}\}]"}}
+  addUserKnob {26 ""}
+  addUserKnob {7 w_mag}
+  w_mag {{"\[switch \[numvalue parent.JitterPattern] \{0 \{format 0.42\} 1 \{format 0.37\} 2 \{format 0.41\} 3 \{format 0.49\} 4 \{format 0.48\} 5 \{format 0.38\} default \{value parent.intensity.w\}\}]"}}
+  addUserKnob {7 h_mag}
+  h_mag {{"\[switch \[numvalue parent.JitterPattern] \{0 \{format 0.46\} 1 \{format 0.6\} 2 \{format 0.6\} 3 \{format 0.5\} 4 \{format 0.42\} 5 \{format 0.17\} default \{value parent.intensity.h\}\}]"}}
+ }
+ Noise {
+  output {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  cliptype none
+  replace true
+  size {{parent.Noise_Parameters.w_size}}
+  zoffset {{1+parent.Noise_Parameters.seed+parent.Noise_Parameters.w_irr/2}}
+  octaves 2
+  gamma 1
+  translate {{parent.translate} {parent.translate}}
+  rotate {{parent.rotate}}
+  scale {{parent.scale}}
+  skewX {{parent.skew}}
+  center {{parent.center} {parent.center}}
+  xrotate {{parent.Noise_Parameters.w_irr*45}}
+  yrotate {{parent.Noise_Parameters.w_irr*45}}
+  name red
+  xpos 592
+  ypos -812
+ }
+ Noise {
+  output {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  cliptype none
+  replace true
+  size {{parent.Noise_Parameters.h_size}}
+  zoffset {{1+2*parent.Noise_Parameters.seed+parent.Noise_Parameters.h_irr/2}}
+  octaves 2
+  gamma 1
+  translate {{parent.translate} {parent.translate}}
+  rotate {{parent.rotate}}
+  scale {{parent.scale}}
+  skewX {{parent.skew}}
+  center {{parent.center} {parent.center}}
+  xrotate {{parent.Noise_Parameters.h_irr*45}}
+  yrotate {{parent.Noise_Parameters.h_irr*45}}
+  name green
+  xpos 592
+  ypos -770
+ }
+ Multiply {
+  channels {rgba.red rgba.green -rgba.blue none}
+  value 2
+  name Multiply2
+  xpos 592
+  ypos -728
+ }
+ Add {
+  channels {rgba.red rgba.green -rgba.blue none}
+  value -1
+  name Add2
+  xpos 592
+  ypos -685
+ }
+ Multiply {
+  channels {rgba.red rgba.green -rgba.blue none}
+  value {{parent.Noise_Parameters.w_mag/2 i} {parent.Noise_Parameters.h_mag/2 i} 1 1}
+  name Multiply3
+  xpos 592
+  ypos -643
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  Bchannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Plus
+  xpos 366
+  ypos -636
+ }
+ Clamp {
+  maximum_enable false
+  name Clamp1
+  xpos 366
+  ypos -608
+ }
+ Add {
+  channels {rgba.red rgba.green -rgba.blue none}
+  value 0.5
+  name Add3
+  xpos 366
+  ypos -566
+ }
+ Multiply {
+  channels rgb
+  value 0.5
+  name Multiply4
+  xpos 366
+  ypos -524
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox1
+  xpos 366
+  ypos -399
+  disable {{!parent.BBOX i}}
+ }
+push $Nf993ec00
+ Dot {
+  name Dot1
+  xpos 97
+  ypos -294
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 backward.u
+  from1 rgba.green
+  to1 backward.v
+  bbox A
+  name Copy
+  xpos 366
+  ypos -313
+ }
+ IDistort {
+  channels rgb
+  uv backward
+  uv_offset {{parent.offset}}
+  uv_scale 15
+  blur_scale 85
+  name IDistort
+  xpos 366
+  ypos -241
+ }
+ Remove {
+  channels backward
+  name Remove
+  xpos 366
+  ypos -179
+ }
+ Crop {
+  box {{0 i} {0 i} {width i} {height i}}
+  reformat true
+  crop false
+  name Crop
+  xpos 366
+  ypos -113
+  disable {{!parent.Crop i}}
+ }
+ Output {
+  name Output1
+  xpos 366
+  ypos 70
+ }
+ Noise {
+  inputs 0
+  output {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  cliptype none
+  replace true
+  size {{parent.Noise_Parameters.h_size}}
+  zoffset {{2*parent.Noise_Parameters.seed+parent.Noise_Parameters.h_irr/2}}
+  octaves 2
+  gamma 1
+  translate {{parent.translate} {parent.translate}}
+  rotate {{parent.rotate}}
+  scale {{parent.scale}}
+  skewX {{parent.skew}}
+  center {{parent.center} {parent.center}}
+  xrotate {{parent.Noise_Parameters.w_irr*45}}
+  yrotate {{parent.Noise_Parameters.w_irr*45}}
+  name green1
+  xpos 742
+  ypos -772
+ }
+end_group
+Blur {
+ size 1
+ name Blur29
+ selected true
+ xpos -514
+ ypos 673
+}
+push $Nf993e400
+Dissolve {
+ inputs 2
+ which 0.1
+ name Dissolve3
+ selected true
+ xpos -393
+ ypos 673
+}
+Group {
+ name lightBlur_v04_1
+ help "Builds a stack of blurs from largest to smallest, halving the kernel each\ntime, then adds them together"
+ tile_color 0xff7e21ff
+ selected true
+ xpos -393
+ ypos 869
+ addUserKnob {20 LightBlur}
+ addUserKnob {41 channels T Dissolve_chans.channels}
+ addUserKnob {14 size l blur t "Blur amount" R 1 100}
+ size 2000
+ addUserKnob {7 bias t "Emphasise large or small blurs" R 0 10}
+ bias 0.8
+ addUserKnob {7 minBlur l "minimum blur" t "Minimum blur used for output" R 1 100}
+ minBlur 1
+ addUserKnob {6 do_normalize l normalize t "Divide by number of accumulated blurs" +STARTLINE}
+ do_normalize true
+ addUserKnob {6 clampAlpha l "clamp alpha" t "Clamp the alpha to 1" +STARTLINE}
+ addUserKnob {41 crop l "crop to format" T masterBlur.crop}
+ addUserKnob {41 which l mix t "mix between original and lightblurred image" T Dissolve_chans.which}
+ addUserKnob {20 blurTab l Blur}
+ addUserKnob {41 filter T masterBlur.filter}
+ addUserKnob {41 quality l "" -STARTLINE T masterBlur.quality}
+ addUserKnob {20 Version}
+ addUserKnob {26 "" l Help: T "Light Blur builds a stack of blurs from largest to smallest,\nhalves the kernel each time, and then adds them together."}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start http://lois4/document/nuke-light-blur-gizmo-help/" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 VersionRelease l "Version Release:" T 4.0}
+ addUserKnob {26 re l ReleaseNotes T "Removed mask. Crop on by default."}
+ addUserKnob {26 "" l Authors: T "Mark Nettleton (mnettleton) and Jason Billington (jbillington)"}
+ addUserKnob {26 le l "Last Edit by:" T "Mark Nettleton (mnettleton)"}
+ addUserKnob {26 ReleaseDate l "Release Date:" T 10/17/13}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 304
+  ypos -899
+ }
+ Dot {
+  name INPUT
+  label INPUT
+  note_font_size 16
+  xpos 332
+  ypos -723
+ }
+set Nf99d7400 [stack 0]
+add_layer {normalize normalize.red normalize.green normalize.blue normalize.alpha}
+ Shuffle {
+  red white
+  green white
+  blue white
+  alpha white
+  out normalize
+  name Shuffle1
+  label "add Normalize"
+  xpos 70
+  ypos -727
+ }
+set Nf99d7800 [stack 0]
+ Blur {
+  size {{parent.Blur1.size*0.003906/2} {parent.Blur1.size*0.003906/2}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur10
+  xpos -107
+  ypos 924
+ }
+ Multiply {
+  value {{Blur10.size>1?1:0}}
+  name Multiply27
+  label "BlurSize less than 0 = off"
+  xpos -107
+  ypos 962
+ }
+ Multiply {
+  value {{Blur10.size>(parent.minBlur)?1:0}}
+  name Multiply28
+  label "Less than Parent.MinBlur = off"
+  xpos -107
+  ypos 1019
+ }
+ Multiply {
+  value {{Plus8.mix>1?Plus8.mix:1}}
+  name Multiply29
+  label "bias fix"
+  xpos -195
+  ypos 1019
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.003906} {parent.Blur1.size*0.003906}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur9
+  xpos -104
+  ypos 696
+ }
+ Multiply {
+  value {{Blur9.size>1?1:0}}
+  name Multiply9
+  label "BlurSize less than 0 = off"
+  xpos -104
+  ypos 734
+ }
+ Multiply {
+  value {{Blur9.size>(parent.minBlur)?1:0}}
+  name Multiply10
+  label "Less than Parent.MinBlur = off"
+  xpos -104
+  ypos 791
+ }
+ Multiply {
+  value {{Plus7.mix>1?Plus7.mix:1}}
+  name Multiply26
+  label "bias fix"
+  xpos -195
+  ypos 791
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.007812} {parent.Blur1.size*0.007812}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur8
+  xpos -105
+  ypos 464
+ }
+ Multiply {
+  value {{Blur8.size>1?1:0}}
+  name Multiply8
+  label "BlurSize less than 0 = off"
+  xpos -105
+  ypos 509
+ }
+ Multiply {
+  value {{Blur8.size>(parent.minBlur)?1:0 i}}
+  name Multiply11
+  label "Less than Parent.MinBlur = off"
+  xpos -105
+  ypos 566
+ }
+ Multiply {
+  value {{Plus6.mix>1?Plus6.mix:1 i}}
+  name Multiply25
+  label "bias fix"
+  xpos -201
+  ypos 566
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.015625} {parent.Blur1.size*0.015625}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur7
+  xpos -105
+  ypos 288
+ }
+ Multiply {
+  value {{Blur7.size>1?1:0 i}}
+  name Multiply7
+  label "BlurSize less than 0 = off"
+  xpos -105
+  ypos 326
+ }
+ Multiply {
+  value {{Blur7.size>(parent.minBlur)?1:0 i}}
+  name Multiply12
+  label "Less than Parent.MinBlur = off"
+  xpos -105
+  ypos 383
+ }
+ Multiply {
+  value {{Plus5.mix>1?Plus5.mix:1 i}}
+  name Multiply24
+  label "bias fix"
+  xpos -206
+  ypos 383
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.03125} {parent.Blur1.size*0.03125}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur6
+  xpos -105
+  ypos 96
+ }
+ Multiply {
+  value {{Blur6.size>1?1:0 i}}
+  name Multiply6
+  label "BlurSize less than 0 = off"
+  xpos -105
+  ypos 134
+ }
+ Multiply {
+  value {{Blur6.size>(parent.minBlur)?1:0 i}}
+  name Multiply13
+  label "Less than Parent.MinBlur = off"
+  xpos -105
+  ypos 191
+ }
+ Multiply {
+  value {{Plus4.mix>1?Plus4.mix:1 i}}
+  name Multiply23
+  label "bias fix"
+  xpos -200
+  ypos 191
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.0625} {parent.Blur1.size*0.0625}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur5
+  xpos -105
+  ypos -103
+ }
+ Multiply {
+  value {{Blur5.size>1?1:0 i}}
+  name Multiply5
+  label "BlurSize less than 0 = off"
+  xpos -105
+  ypos -65
+ }
+ Multiply {
+  value {{Blur5.size>(parent.minBlur)?1:0 i}}
+  name Multiply14
+  label "Less than Parent.MinBlur = off"
+  xpos -105
+  ypos -8
+ }
+ Multiply {
+  value {{Plus3.mix>1?Plus3.mix:1 i}}
+  name Multiply22
+  label "bias fix"
+  xpos -203
+  ypos -8
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.125} {parent.Blur1.size*0.125}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur4
+  xpos -105
+  ypos -304
+ }
+ Multiply {
+  value {{Blur4.size>1?1:0 i}}
+  name Multiply4
+  label "BlurSize less than 0 = off"
+  xpos -105
+  ypos -258
+ }
+ Multiply {
+  value {{Blur4.size>(parent.minBlur)?1:0 i}}
+  name Multiply15
+  label "Less than Parent.MinBlur = off"
+  xpos -105
+  ypos -201
+ }
+ Multiply {
+  value {{Plus2.mix>1?Plus2.mix:1 i}}
+  name Multiply21
+  label "bias fix"
+  xpos -205
+  ypos -201
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.25} {parent.Blur1.size*0.25}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur3
+  xpos -105
+  ypos -493
+ }
+ Multiply {
+  value {{Blur3.size>1?1:0 i}}
+  name Multiply3
+  label "BlurSize less than 0 = off"
+  xpos -105
+  ypos -455
+ }
+ Multiply {
+  value {{Blur3.size>(parent.minBlur)?1:0 i}}
+  name Multiply16
+  label "Less than Parent.MinBlur = off"
+  xpos -105
+  ypos -398
+ }
+ Multiply {
+  value {{Plus1.mix>1?Plus1.mix:1 i}}
+  name Multiply20
+  label "bias fix"
+  xpos -210
+  ypos -398
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.Blur1.size*0.5} {parent.Blur1.size*0.5}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur2
+  xpos -101
+  ypos -676
+ }
+ Multiply {
+  value {{Blur2.size>1?1:0}}
+  name Multiply2
+  label "BlurSize less than 0 = off"
+  xpos -101
+  ypos -638
+ }
+ Multiply {
+  value {{Blur2.size>(parent.minBlur)?1:0 i}}
+  name Multiply17
+  label "Less than Parent.MinBlur = off"
+  xpos -101
+  ypos -582
+ }
+ Multiply {
+  value {{Plus.mix>1?Plus.mix:1 i}}
+  name Multiply19
+  label "bias fix"
+  xpos -202
+  ypos -582
+ }
+push $Nf99d7800
+ Blur {
+  size {{parent.size.w} {parent.size.h}}
+  filter {{parent.masterBlur.filter}}
+  quality {{parent.masterBlur.quality}}
+  crop {{parent.masterBlur.crop}}
+  name Blur1
+  xpos -305
+  ypos -727
+ }
+set Nf9aeec00 [stack 0]
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{1/(parent.bias*1)}}
+  name Plus
+  xpos -305
+  ypos -570
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus.mix/parent.bias i}}
+  name Plus1
+  xpos -305
+  ypos -384
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus1.mix/(parent.bias) i}}
+  name Plus2
+  xpos -305
+  ypos -187
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus2.mix/(parent.bias) i}}
+  name Plus3
+  xpos -305
+  ypos 6
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus3.mix/(parent.bias) i}}
+  name Plus4
+  xpos -305
+  ypos 205
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus4.mix/(parent.bias) i}}
+  name Plus5
+  xpos -305
+  ypos 397
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus5.mix/(parent.bias) i}}
+  name Plus6
+  xpos -305
+  ypos 580
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus6.mix/(parent.bias)}}
+  name Plus7
+  xpos -305
+  ypos 803
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge normalize
+  mix {{Plus6.mix/(parent.bias)}}
+  name Plus8
+  xpos -305
+  ypos 1031
+ }
+set Nf9b2f000 [stack 0]
+push $Nf9b2f000
+ Merge2 {
+  inputs 2
+  operation divide
+  Bchannels normalize
+  name Merge1
+  label Normalize
+  xpos -305
+  ypos 1208
+  disable {{!parent.do_normalize}}
+ }
+ Remove {
+  channels normalize
+  name Remove1
+  xpos -305
+  ypos 1269
+ }
+ Clamp {
+  channels alpha
+  name Clamp1
+  xpos -305
+  ypos 1337
+  disable {{parent.clampAlpha-1 i x25 1}}
+ }
+push $Nf99d7400
+ Dot {
+  name Dot1
+  xpos 324
+  ypos 1395
+ }
+ Dissolve {
+  inputs 2
+  channels rgb
+  which 0.02
+  maskChannelMask none
+  name Dissolve_chans
+  label channels_todo
+  xpos -305
+  ypos 1391
+ }
+ Output {
+  name Output
+  xpos -305
+  ypos 1511
+ }
+push $Nf9aeec00
+ Multiply {
+  value {{Blur1.size>1?1:0}}
+  name Multiply1
+  xpos -415
+  ypos -727
+ }
+ Multiply {
+  value {{Blur1.size>(parent.minBlur)?1:0}}
+  name Multiply18
+  label "Less than Parent.MinBlur = off"
+  xpos -415
+  ypos -670
+ }
+ Blur {
+  inputs 0
+  name masterBlur
+  tile_color 0xff0000ff
+  xpos -102
+  ypos -832
+ }
+end_group
+Group {
+ inputs 2
+ name Group8
+ label "var defocus"
+ selected true
+ xpos -393
+ ypos 1125
+ mapsize {0.15 0.15}
+ addUserKnob {20 varDefocus}
+ addUserKnob {16 defocusamount l "Defocus Amount"}
+ defocusamount 1
+ addUserKnob {14 defocusScale l "Defocus Scale" R 0 100}
+ defocusScale 1
+ addUserKnob {4 aspectratio l "Aspect Format" M {Anamorphic Spherical}}
+ aspectratio Spherical
+ addUserKnob {6 cropformat l "Crop To Format" +STARTLINE}
+ cropformat true
+ addUserKnob {20 Version}
+ addUserKnob {26 "" l Help: T "This node defocuses an image based on a matte, and the defocus amount\nadjusts according to the matte value."}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start https://confluence.lucasfilm.com/x/EMyh" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 release l "Version Release:" T 1.2}
+ addUserKnob {26 notes l "Release Notes:" T "Fixed anamorphic issue. Blur not being double in Y"}
+ addUserKnob {26 "" l Authors: T "Jason Billington (jbillington)"}
+ addUserKnob {26 "" l "Last Edit By:" T "Jason Billington (jbillington)"}
+ addUserKnob {26 Date l "Release Date:" T 08/02/2011}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  label "if step = 5 blur= root*20%"
+  xpos -963
+  ypos -548
+  bdwidth 240
+  bdheight 214
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  label "if step = 5 blur= root*40%"
+  xpos -895
+  ypos -230
+  bdwidth 240
+  bdheight 214
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode3
+  label "if step = 5 blur= root*60%"
+  xpos -842
+  ypos 118
+  bdwidth 240
+  bdheight 214
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode4
+  label "if step = 5 blur= root*80%"
+  xpos -785
+  ypos 438
+  bdwidth 240
+  bdheight 214
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode5
+  label "if step = 5 blur= root*100%"
+  xpos -768
+  ypos 760
+  bdwidth 240
+  bdheight 214
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice1
+  label "lo:0.0, hi:0.2 gradient\ncentre: 0.1"
+  xpos -473
+  ypos -661
+  bdwidth 134
+  bdheight 154
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice10
+  label "lo: 1, hi: 1.2\nCentre: 1.1"
+  xpos -470
+  ypos 808
+  bdwidth 140
+  bdheight 166
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice2
+  label "lo: 0.2, hi: 0.4\nCentre: 0.3"
+  xpos -472
+  ypos -503
+  bdwidth 137
+  bdheight 159
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice3
+  label "lo: 0.2, hi: 0.4 + Gradient\nCentre: 0.3"
+  xpos -474
+  ypos -337
+  bdwidth 142
+  bdheight 160
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice4
+  label "lo: 0.4, hi: 0.6\nCentre: 0.5"
+  xpos -472
+  ypos -170
+  bdwidth 138
+  bdheight 156
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice5
+  label "lo: 0.4, hi: 0.6 + Gradient\nCentre: 0.5"
+  xpos -471
+  ypos -8
+  bdwidth 138
+  bdheight 152
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice6
+  label "lo: 0.6, hi: 0.8\nCentre: 0.7"
+  xpos -469
+  ypos 152
+  bdwidth 134
+  bdheight 158
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice7
+  label "lo: 0.6, hi: 0.8 + Gradient\nCentre: 0.7"
+  xpos -471
+  ypos 315
+  bdwidth 138
+  bdheight 154
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice8
+  label "lo: 0.8, hi: 1.0\nCentre: 0.9"
+  xpos -471
+  ypos 476
+  bdwidth 140
+  bdheight 162
+ }
+ BackdropNode {
+  inputs 0
+  name DepthSlice9
+  label "lo: 0.8, hi: 1.0 + Gradient\nCentre: 0.9"
+  xpos -471
+  ypos 648
+  bdwidth 135
+  bdheight 154
+ }
+ Input {
+  inputs 0
+  name Matte
+  xpos -284
+  ypos -794
+  number 1
+ }
+ Dot {
+  name Dot3
+  xpos -246
+  ypos -751
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  black alpha
+  out2 depth
+  name Shuffle3
+  xpos -280
+  ypos -686
+ }
+set Nf9bb7c00 [stack 0]
+ ZSlice {
+  Zchan depth.Z
+  center 1.1
+  dof 0.2
+  name ZSlice14
+  xpos -449
+  ypos 857
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle18
+  xpos -449
+  ypos 900
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.9
+  white_clamp true
+  name Grade11
+  xpos -449
+  ypos 929
+ }
+ Input {
+  inputs 0
+  name Image
+  xpos -627
+  ypos -791
+ }
+ Dot {
+  name Dot2
+  xpos -593
+  ypos -743
+ }
+set Nf9bd3000 [stack 0]
+ Defocus {
+  defocus {{parent.defocusamount i}}
+  ratio {{(parent.aspectratio+1)/2 i}}
+  scale {{parent.defocusScale i}}
+  name DefocusMaster
+  xpos -627
+  ypos 849
+ }
+set Nf9bd3400 [stack 0]
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.9
+  dof 0.2
+  name ZSlice13
+  xpos -450
+  ypos 700
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle17
+  xpos -450
+  ypos 743
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.8
+  white_clamp true
+  name Grade10
+  xpos -450
+  ypos 772
+ }
+push $Nf9bd3400
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.9
+  dof 0.2
+  name ZSlice12
+  xpos -447
+  ypos 526
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle16
+  xpos -447
+  ypos 569
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.79
+  whitepoint 0.8
+  white_clamp true
+  name Grade9
+  xpos -447
+  ypos 598
+ }
+push $Nf9bd3000
+ Defocus {
+  defocus {{parent.defocusamount*.8 i}}
+  ratio {{(parent.aspectratio+1)/2 i}}
+  scale {{parent.defocusScale i}}
+  name Defocus
+  xpos -648
+  ypos 499
+ }
+set Nf9c07000 [stack 0]
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.7
+  dof 0.2
+  name ZSlice11
+  xpos -440
+  ypos 365
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle15
+  xpos -440
+  ypos 408
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.6
+  whitepoint 0.8
+  white_clamp true
+  name Grade8
+  xpos -440
+  ypos 437
+ }
+push $Nf9c07000
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.7
+  dof 0.2
+  name ZSlice10
+  xpos -447
+  ypos 199
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle12
+  xpos -447
+  ypos 242
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.59
+  whitepoint 0.6
+  white_clamp true
+  name Grade7
+  xpos -447
+  ypos 271
+ }
+push $Nf9bd3000
+ Defocus {
+  defocus {{parent.defocusamount*.6 i}}
+  ratio {{(parent.aspectratio+1)/2 i}}
+  scale {{parent.defocusScale i}}
+  name Defocus1
+  xpos -695
+  ypos 192
+ }
+set Nf9c48c00 [stack 0]
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  dof 0.2
+  name ZSlice1
+  xpos -444
+  ypos 42
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle7
+  xpos -444
+  ypos 85
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.4
+  whitepoint 0.6
+  white_clamp true
+  name Grade2
+  xpos -444
+  ypos 114
+ }
+push $Nf9c48c00
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  dof 0.2
+  name ZSlice2
+  xpos -454
+  ypos -120
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle9
+  xpos -454
+  ypos -77
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.39
+  whitepoint 0.4
+  white_clamp true
+  name Grade5
+  xpos -454
+  ypos -48
+ }
+push $Nf9bd3000
+ Defocus {
+  defocus {{parent.defocusamount*.4 i}}
+  ratio {{(parent.aspectratio+1)/2 i}}
+  scale {{parent.defocusScale i}}
+  name Defocus2
+  xpos -759
+  ypos -136
+ }
+set Nf9c80800 [stack 0]
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.3
+  dof 0.2
+  name ZSlice9
+  xpos -450
+  ypos -285
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle14
+  xpos -450
+  ypos -242
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.2
+  whitepoint 0.4
+  white_clamp true
+  name Grade3
+  xpos -450
+  ypos -213
+ }
+push $Nf9c80800
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.3
+  dof 0.2
+  name ZSlice8
+  xpos -459
+  ypos -452
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle13
+  xpos -459
+  ypos -409
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.19
+  whitepoint 0.2
+  white_clamp true
+  name Grade6
+  xpos -459
+  ypos -380
+ }
+push $Nf9bd3000
+ Defocus {
+  defocus {{parent.defocusamount*.2 i}}
+  ratio {{(parent.aspectratio+1)/2 i}}
+  scale {{parent.defocusScale i}}
+  name Defocus3
+  xpos -823
+  ypos -445
+ }
+set Nf9cba400 [stack 0]
+push $Nf9bb7c00
+ ZSlice {
+  Zchan depth.Z
+  center 0.1
+  dof 0.2
+  name ZSlice7
+  xpos -461
+  ypos -612
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle11
+  xpos -461
+  ypos -569
+ }
+ Grade {
+  channels rgba
+  whitepoint 0.2
+  white_clamp true
+  name Grade4
+  xpos -461
+  ypos -540
+ }
+push $Nf9cba400
+push $Nf9bd3000
+ Keymix {
+  inputs 3
+  name Keymix1
+  xpos -932
+  ypos -445
+ }
+ Keymix {
+  inputs 3
+  name Keymix2
+  xpos -867
+  ypos -387
+ }
+ Keymix {
+  inputs 3
+  name Keymix3
+  xpos -867
+  ypos -136
+ }
+ Keymix {
+  inputs 3
+  name Keymix4
+  xpos -805
+  ypos -55
+ }
+ Keymix {
+  inputs 3
+  name Keymix5
+  xpos -805
+  ypos 192
+ }
+ Keymix {
+  inputs 3
+  name Keymix6
+  xpos -765
+  ypos 264
+ }
+ Keymix {
+  inputs 3
+  name Keymix7
+  xpos -765
+  ypos 499
+ }
+ Keymix {
+  inputs 3
+  name Keymix8
+  xpos -736
+  ypos 591
+ }
+ Keymix {
+  inputs 3
+  name Keymix9
+  xpos -736
+  ypos 849
+ }
+ Keymix {
+  inputs 3
+  name Keymix10
+  xpos -723
+  ypos 922
+ }
+ Crop {
+  box {0 0 {input.width i} {input.height i}}
+  name Crop1
+  xpos -723
+  ypos 1073
+  disable {{!parent.cropformat i}}
+ }
+ Dot {
+  name Dot4
+  xpos -689
+  ypos 1143
+ }
+ Output {
+  name Output1
+  xpos -723
+  ypos 1301
+ }
+end_group
+Group {
+ name Group9
+ label "chroma ab"
+ selected true
+ xpos -390
+ ypos 1328
+ addUserKnob {20 User}
+ addUserKnob {14 rchan l "red scale" R 0 100}
+ rchan 1.00075
+ addUserKnob {14 gchan l "green scale" R 0 100}
+ gchan 1.0005
+ addUserKnob {14 bchan l "blue scale" R 0 100}
+ bchan 1
+ addUserKnob {20 pan_group l "center / pan" n 1}
+ addUserKnob {12 center}
+ center {{input0.width/2} {input0.height/2}}
+ addUserKnob {6 pad_black l "black outside" -STARTLINE}
+ pad_black true
+ addUserKnob {12 rchan_pan l "red pan"}
+ rchan_pan {-0.2 0.1}
+ addUserKnob {12 gchan_pan l "green pan"}
+ addUserKnob {12 bchan_pan l "blue pan"}
+ addUserKnob {26 ""}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {4 outputAlpha l output M {"fake alpha over bg" "fake alpha only" white ""}}
+ outputAlpha "fake alpha only"
+ addUserKnob {26 ""}
+ addUserKnob {7 mix}
+ mix 1
+ addUserKnob {20 version l Version}
+ addUserKnob {26 Help l Help: T "This 'chromaAb' gizmo is supposed to be similar to the chormaAb that is in Shake,\nand applies the effect on whatever is connected to the FG input.\n\nIt is meant to be used as a merge operation, but if you choose to only plug in the \nFG you can. This, however, can cause unwanted edges. Because this is ment to\nbe used as a merge, if you disable this node, it will return whatever is inputed in the BG.\nIf nothing is put into the BG and it is disabled, this will return nothing.\n\n\n"}
+ addUserKnob {26 ""}
+ addUserKnob {32 MoreHelp l "More Help" T "start http://lois4.lucasfilm.com/document/chromaab_v01gizmo-nuke/" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 VersionRelease l "Version Release" T 3.0}
+ addUserKnob {26 ReleaseNotes l "Release Notes" T "fixes proxy bugs"}
+ addUserKnob {26 Author l Author: T "Can Chang (cchang)"}
+ addUserKnob {26 LastEditBy l "Last Edit By:" T "Mark Nettleton (mnettleton)"}
+ addUserKnob {26 ReleaseDate l "Release Date:" T 11/18/11}
+}
+ Input {
+  inputs 0
+  name bg
+  xpos 523
+  ypos -735
+  number 1
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.Reformat2.box_width i}}
+  box_height {{parent.Reformat2.box_height i}}
+  box_fixed true
+  box_pixel_aspect {{parent.Reformat2.box_pixel_aspect i}}
+  pbb true
+  name Reformat3
+  xpos 523
+  ypos -664
+ }
+ Dot {
+  name Dot3
+  xpos 557
+  ypos -468
+ }
+set Nf9d1d400 [stack 0]
+ Dot {
+  name Dot2
+  xpos 557
+  ypos -180
+ }
+set Nf9d1d800 [stack 0]
+ Dot {
+  name Dot1
+  xpos 557
+  ypos 204
+ }
+ Input {
+  inputs 0
+  name fg
+  xpos 641
+  ypos -733
+ }
+ Reformat {
+  type "to box"
+  box_width {{"\[value \[input this 0].format.r] - \[value \[input this 0].format.x]" i}}
+  box_height {{"\[value \[input this 0].format.t]  - \[value \[input this 0].format.y] " i}}
+  box_fixed true
+  box_pixel_aspect {{"\[value \[input this 0].pixel_aspect]" i}}
+  pbb true
+  name Reformat2
+  xpos 641
+  ypos -661
+ }
+ Dot {
+  name Dot7
+  xpos 675
+  ypos -588
+ }
+set Nf9d3cc00 [stack 0]
+ Transform {
+  translate {{parent.bchan_pan} {parent.bchan_pan}}
+  scale {{parent.bchan} {parent.bchan}}
+  center {{parent.center.x} {parent.center.y}}
+  black_outside {{parent.pad_black}}
+  name blue_repo
+  xpos 909
+  ypos -490
+ }
+set Nf9d3d000 [stack 0]
+push $Nf9d3cc00
+ Transform {
+  translate {{parent.gchan_pan} {parent.gchan_pan}}
+  scale {{parent.gchan} {parent.gchan}}
+  center {{parent.center.x} {parent.center.y}}
+  black_outside {{parent.pad_black}}
+  name green_repo
+  xpos 787
+  ypos -492
+ }
+set Nf9d3d400 [stack 0]
+push $Nf9d3cc00
+ Transform {
+  translate {{parent.rchan_pan} {parent.rchan_pan}}
+  scale {{parent.rchan} {parent.rchan}}
+  center {{parent.center.x} {parent.center.y}}
+  black_outside {{parent.pad_black}}
+  name red_repo
+  xpos 641
+  ypos -491
+ }
+set Nf9d3d800 [stack 0]
+ Merge {
+  inputs 2
+  operation plus
+  name Merge1
+  xpos 1060
+  ypos -323
+ }
+ Merge {
+  inputs 2
+  operation plus
+  name Merge2
+  xpos 1170
+  ypos -323
+ }
+ Grade {
+  channels alpha
+  multiply 0.3333333333
+  name Grade1
+  label "one third A"
+  xpos 1170
+  ypos -264
+ }
+set Nf9d68400 [stack 0]
+push $Nf9d1d800
+push $Nf9d68400
+ Merge2 {
+  inputs 2
+  operation under
+  name Merge5
+  label "fake A over bg"
+  xpos 1170
+  ypos -190
+ }
+push $Nf9d1d400
+push $Nf9d3d000
+ Merge {
+  inputs 2
+  swap true
+  name blueOver
+  xpos 909
+  ypos -323
+ }
+push $Nf9d1d400
+push $Nf9d3d400
+ Merge {
+  inputs 2
+  swap true
+  name greenOver
+  xpos 787
+  ypos -323
+ }
+push $Nf9d1d400
+push $Nf9d3d800
+ Merge {
+  inputs 2
+  swap true
+  name redOver
+  xpos 641
+  ypos -324
+ }
+ Copy {
+  inputs 2
+  from0 rgba.green
+  to0 rgba.green
+  name Copy2
+  xpos 787
+  ypos -258
+  disable {{"!\[exists parent.input0]&&!\[exists parent.input1]" i x2116 0}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.blue
+  to0 rgba.blue
+  name Copy3
+  xpos 909
+  ypos -258
+  disable {{"!\[exists parent.input0]&&!\[exists parent.input1]" i x2116 0}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy4
+  xpos 1170
+  ypos -113
+ }
+ CCrosstalk {
+  name CCrosstalk1
+  xpos 1170
+  ypos -10
+ }
+ Clamp {
+  channels alpha
+  name Clamp1
+  xpos 1170
+  ypos 55
+ }
+set Nf9da6800 [stack 0]
+ Switch {
+  inputs 2
+  which {{outputAlpha i}}
+  name Switch1
+  xpos 1396
+  ypos 61
+ }
+push $Nf9da6800
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 1396
+  ypos 102
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos 1396
+  ypos 144
+  disable {{(outputAlpha==2)*-1+1 i}}
+ }
+ Dissolve {
+  inputs 2
+  which {{1-parent.mix}}
+  name Dissolve1
+  label mix
+  xpos 1396
+  ypos 188
+ }
+ Output {
+  name Output1
+  xpos 1396
+  ypos 277
+ }
+end_group
+Group {
+ name Vignette1
+ selected true
+ xpos -390
+ ypos 1456
+ addUserKnob {20 User l oVignette}
+ addUserKnob {26 "" l Shape}
+ addUserKnob {6 preview l "Preview Vignette Shape" t "Output just the vignette shape for preview purposes" -STARTLINE}
+ addUserKnob {41 area T Crop1.box}
+ addUserKnob {26 "" l Falloff}
+ addUserKnob {7 gamma R 0.1 5}
+ gamma 0.44
+ addUserKnob {7 inner}
+ inner 0.034
+ addUserKnob {7 outer}
+ outer 1
+ addUserKnob {26 ""}
+ addUserKnob {26 "" l Effects}
+ addUserKnob {6 darkenEnable l Darken t "Enable the Darken function" -STARTLINE}
+ darkenEnable true
+ addUserKnob {7 darken l Amount t "Gain the image down by this amount"}
+ darken 0.32
+ addUserKnob {26 ""}
+ addUserKnob {6 blurEnable l Blur t "Enable the Blur function" -STARTLINE}
+ addUserKnob {7 blur l Amount t "Compound Blur the image by a maximum of this amount" R 0 20}
+ blur 0.5
+ addUserKnob {26 ""}
+ addUserKnob {6 desatEnable l Desaturate t "Enable the Desaturate Function" -STARTLINE}
+ desatEnable true
+ addUserKnob {7 desat l Amount t "Desaturate the image by this amount"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 125
+  ypos -22
+ }
+ Crop {
+  box {-254 -282 2370 1286}
+  name Crop1
+  xpos 125
+  ypos 2
+  disable true
+ }
+add_layer {oVignette oVignette.matte}
+ Radial {
+  output oVignette
+  replace true
+  invert true
+  area {{center.x-size.w/2*(r2/r1)} {center.y-size.h/2*(r2/r1)} {center.x+size.w/2*(r2/r1)} {center.y+size.h/2*(r2/r1)}}
+  name Radial2
+  xpos 125
+  ypos 43
+  addUserKnob {20 User}
+  addUserKnob {12 center}
+  center {{(parent.area.x+parent.area.r)/2} {(parent.area.y+parent.area.t)/2}}
+  addUserKnob {14 size R 0 100}
+  size {{abs(parent.area.r-parent.area.x)} {abs(parent.area.t-parent.area.y)}}
+  addUserKnob {7 r1}
+  r1 {{(size.h/2+size.w/2)/2}}
+  addUserKnob {7 r2}
+  r2 {{sqrt(pow(size.w/2,2)+pow(size.h/2,2))}}
+ }
+ Grade {
+  channels oVignette
+  blackpoint {{min(parent.inner,parent.outer)}}
+  whitepoint {{parent.outer}}
+  gamma {{parent.gamma}}
+  name Grade2
+  xpos 125
+  ypos 79
+ }
+ Grade {
+  white {{1-min(max(parent.darken,0),1)}}
+  maskChannelInput oVignette.matte
+  name Grade1
+  xpos 125
+  ypos 127
+  disable {{!parent.darkenEnable}}
+ }
+ ZBlur {
+  channels rgba
+  Zchan oVignette.matte
+  math linear
+  size {{parent.blur}}
+  max_size {{parent.blur}}
+  name ZBlur1
+  xpos 125
+  ypos 170
+  disable {{!parent.blurEnable}}
+ }
+ Saturation {
+  saturation {{1-max(min(parent.desat,1),0)}}
+  maskChannelInput oVignette.matte
+  name Saturation1
+  xpos 125
+  ypos 199
+  disable {{!parent.desatEnable}}
+ }
+ Shuffle {
+  in oVignette
+  name Shuffle1
+  xpos 125
+  ypos 254
+  disable {{!parent.preview}}
+ }
+ Remove {
+  channels oVignette
+  name Remove1
+  xpos 125
+  ypos 283
+ }
+ Output {
+  name Output1
+  xpos 125
+  ypos 326
+ }
+end_group
